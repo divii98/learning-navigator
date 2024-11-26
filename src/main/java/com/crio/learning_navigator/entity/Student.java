@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.engine.internal.Cascade;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,30 +16,30 @@ public class Student {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long regId;
+    private Long id;
 
     @Column
     private String name;
 
-    @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(
             name = "student_subject",
-            joinColumns = @JoinColumn(name = "student_regId"),
-            inverseJoinColumns = @JoinColumn(name = "subject_subId")
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
-    private Set<Subject> enrolledSubjects;
+    private List<Subject> subject;
 
-    @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "student_exam",
-            joinColumns = @JoinColumn(name = "student_regId"),
-            inverseJoinColumns = @JoinColumn(name = "exam_examId")
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "exam_id")
     )
-    private Set<Exam> registeredExams;
+    private List<Exam> exam;
 
     public Student(String name) {
         this.name = name;
+        this.subject = new ArrayList<>();
+        this.exam = new ArrayList<>();
     }
 }

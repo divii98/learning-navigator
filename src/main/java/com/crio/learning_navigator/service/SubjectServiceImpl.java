@@ -59,8 +59,8 @@ public class SubjectServiceImpl implements SubjectService {
                 .orElseThrow(() -> new NotExistException(Constant.SUBJECT_NOT_FOUND));
         Student student = studentRepository.findById(updateRequest.getId())
                 .orElseThrow(()->new NotExistException(Constant.STUDENT_NOT_FOUND));
-        subject.getStudents().add(student);
-        student.getEnrolledSubjects().add(subject);
+        subject.getStudent().add(student);
+        student.getSubject().add(subject);
         return mapper.map(subjectRepository.save(subject),SubjectResponse.class);
     }
 }

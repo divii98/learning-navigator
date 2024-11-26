@@ -1,13 +1,16 @@
 package com.crio.learning_navigator.service;
 
 import com.crio.learning_navigator.constant.Constant;
+import com.crio.learning_navigator.entity.Exam;
 import com.crio.learning_navigator.entity.Student;
 import com.crio.learning_navigator.entity.Subject;
+import com.crio.learning_navigator.exception.ExamAlreadyPresentException;
 import com.crio.learning_navigator.exception.NotExistException;
 import com.crio.learning_navigator.exception.SubjectAlreadyPresentException;
 import com.crio.learning_navigator.exchange.PostAddRequest;
 import com.crio.learning_navigator.exchange.StudentResponse;
 import com.crio.learning_navigator.exchange.UpdateRequest;
+import com.crio.learning_navigator.respository.ExamRepository;
 import com.crio.learning_navigator.respository.StudentRepository;
 import com.crio.learning_navigator.respository.SubjectRepository;
 import jakarta.persistence.EntityManager;
@@ -25,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     SubjectRepository subjectRepository;
     @Autowired
-    EntityManager entityManager;
+    ExamRepository examRepository;
     @Autowired
     StudentRepository studentRepository;
     ModelMapper mapper = new ModelMapper();
@@ -63,11 +66,23 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new NotExistException(Constant.SUBJECT_NOT_FOUND));
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new NotExistException(Constant.STUDENT_NOT_FOUND));
-        if(student.getEnrolledSubjects().contains(subject))
+        if(student.getSubject().contains(subject))
                 throw new SubjectAlreadyPresentException(Constant.SUBJECT_ALREADY_PRESENT);
-        student.getEnrolledSubjects().add(subject);
-        StudentResponse studentResponse =  mapper.map(studentRepository.saveAndFlush(student), StudentResponse.class);
-        entityManager.flush();
-        return studentResponse;
+        student.getSubject().add(subject);
+        return mapper.map(studentRepository.saveAndFlush(student), StudentResponse.class);
+    }
+
+    @Override
+    public StudentResponse updateExam(UpdateRequest body, Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(()-> new NotExistException(Constant.STUDENT_NOT_FOUND));
+        Exam exam = examRepository.findById(body.getId())
+                .orElseThrow(()-> new NotExistException(Constant.EXAM_NOT_FOUND));
+        if(student.getExam().contains(exam))
+            throw  new ExamAlreadyPresentException(Constant.EXAM_ALREADY_PRESENT);
+        if(!student.getSubject().contains(exam.getSubject()))
+            throw  new NotExistException(Constant.SUBJECT_NOT_IN_STUDENT);
+        student.getExam().add(exam);
+        return mapper.map(studentRepository.save(student),StudentResponse.class);
     }
 }

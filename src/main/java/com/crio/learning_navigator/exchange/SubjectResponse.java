@@ -1,19 +1,22 @@
 package com.crio.learning_navigator.exchange;
 
 import com.crio.learning_navigator.entity.Student;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 public class SubjectResponse {
-    @JsonProperty("Subject Id")
-    private Long subId;
-    @JsonProperty("Subject Name")
+    @JsonProperty("subjectId")
+    private Long id;
+    @JsonProperty("subjectName")
     private String name;
-    @JsonProperty("Registered Students")
-    private Set<Student> students;
+    @JsonBackReference
+    @JsonProperty("registeredStudents")
+    private List<StudentResponse> student;
 }

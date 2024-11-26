@@ -1,9 +1,7 @@
 package com.crio.learning_navigator.controller;
 
-import com.crio.learning_navigator.entity.Student;
 import com.crio.learning_navigator.exchange.PostAddRequest;
 import com.crio.learning_navigator.exchange.StudentResponse;
-import com.crio.learning_navigator.exchange.SubjectResponse;
 import com.crio.learning_navigator.exchange.UpdateRequest;
 import com.crio.learning_navigator.service.StudentService;
 import jakarta.validation.Valid;
@@ -11,7 +9,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +41,12 @@ public class StudentController {
     @PutMapping("/{studentId}/addSubject")
     public StudentResponse updateSubject(@Valid @RequestBody UpdateRequest body, @PathVariable Long studentId) {
         return studentService.updateSubject(body,studentId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{studentId}/addExam")
+    public StudentResponse updateExam(@Valid @RequestBody UpdateRequest body, @PathVariable Long studentId) {
+        return studentService.updateExam(body,studentId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

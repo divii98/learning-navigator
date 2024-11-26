@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,17 +17,16 @@ public class Subject {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long subId;
+    private Long id;
 
     @Column
     private String name;
 
-    @JsonBackReference
-    @ManyToMany(mappedBy = "enrolledSubjects",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private Set<Student> students;
+    @ManyToMany(mappedBy = "subject")
+    private List<Student> student;
 
     public Subject(String name) {
         this.name = name;
-        this.students = new HashSet<>();
+        this.student = new ArrayList<>();
     }
 }

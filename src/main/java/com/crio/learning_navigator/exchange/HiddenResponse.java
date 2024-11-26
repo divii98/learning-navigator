@@ -1,10 +1,12 @@
 package com.crio.learning_navigator.exchange;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class HiddenResponse {
-    @JsonProperty("Number")
-    Integer number;
-    @JsonProperty("Fact")
+    @JsonProperty("number")
+    String number;
+    @JsonProperty("fact")
     String fact;
 }

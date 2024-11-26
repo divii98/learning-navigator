@@ -1,27 +1,35 @@
 package com.crio.learning_navigator.exception;
 
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotExistException.class)
-    public ResponseEntity<DefaultHandler> notFoundExceptionHandler(NotExistException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DefaultHandler(ex.getMessage()));
+    public DefaultHandler notFoundExceptionHandler(NotExistException ex){
+        return new DefaultHandler(ex.getMessage());
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public DefaultHandler validationExceptionHandler( MethodArgumentNotValidException ex){
+        return new DefaultHandler(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage());
+    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(SubjectAlreadyPresentException.class)
+    public DefaultHandler subjectAlreadyPresentHandler(SubjectAlreadyPresentException ex){
+        return new DefaultHandler(ex.getMessage());
     }
 
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<DefaultHandler> validationExceptionHandler( MethodArgumentNotValidException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultHandler(Objects.requireNonNull(ex.getFieldError()).getDefaultMessage()));
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ExamAlreadyPresentException.class)
+    public DefaultHandler examAlreadyPresentHandler(ExamAlreadyPresentException ex){
+        return new DefaultHandler(ex.getMessage());
     }
 
 }

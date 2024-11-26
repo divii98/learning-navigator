@@ -1,5 +1,6 @@
 package com.crio.learning_navigator.controller;
 
+import com.crio.learning_navigator.exchange.AddExamRequest;
 import com.crio.learning_navigator.exchange.ExamResponse;
 import com.crio.learning_navigator.exchange.PostAddRequest;
 import com.crio.learning_navigator.service.ExamService;
@@ -18,7 +19,7 @@ public class ExamController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ExamResponse addExam(@Valid @RequestBody PostAddRequest addRequest) {
+    public ExamResponse addExam(@Valid @RequestBody AddExamRequest addRequest) {
         return examService.addExam(addRequest);
     }
 
